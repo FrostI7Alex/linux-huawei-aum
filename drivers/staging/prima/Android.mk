@@ -56,13 +56,10 @@ else
 endif
 
 ifeq ($(WLAN_PROPRIETARY),1)
-    WLAN_BLD_DIR := vendor/qcom/proprietary/wlan
+    WLAN_BLD_DIR := drivers/staging
 else
 ifneq ($(TARGET_SUPPORTS_WEARABLES),true)
-    WLAN_BLD_DIR := vendor/qcom/opensource/wlan
-else
-    WLAN_BLD_DIR := device/qcom/msm8909w/opensource/wlan
-endif
+    WLAN_BLD_DIR := drivers/staging
 endif
 
 # DLKM_DIR was moved for JELLY_BEAN (PLATFORM_SDK 16)
