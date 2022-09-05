@@ -41,6 +41,7 @@ jobs:
         export ARCH=arm64 && export SUBARCH=arm64
         export CROSS_COMPILE=/home/runner/workspace/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9/bin/aarch64-linux-android-
         make O=/home/runner/workspace/output merge_msm8937_64_defconfig
+        make O=/home/runner/workspace/output CONFIG_NO_ERROR_ON_MISMATCH=y
         make O=/home/runner/workspace/output -j$(nproc --all)
 
     - uses: actions/upload-artifact@v3
