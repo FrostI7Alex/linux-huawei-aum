@@ -61,6 +61,7 @@ else
 ifneq ($(TARGET_SUPPORTS_WEARABLES),true)
     WLAN_BLD_DIR := drivers/staging
 endif
+endif
 
 # DLKM_DIR was moved for JELLY_BEAN (PLATFORM_SDK 16)
 ifeq (1,$(filter 1,$(shell echo "$$(( $(PLATFORM_SDK_VERSION) >= 16 ))" )))
