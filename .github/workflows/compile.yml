@@ -1,0 +1,49 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Update APT sources
+      run: sudo apt update
+
+    - name: Install dependencies
+      run: sudo apt install git bc bison flex libssl-dev make
+
+    - name: Create workspace folder
+      run: mkdir /home/runner/workspace
+
+    - name: Clone GCC 4.9 repo
+      run: |
+        cd /home/runner/workspace/
+        git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9
+
+    - name: Clone kernel
+      run: |
+        cd /home/runner/workspace/
+        git clone https://github.com/FrostI7Alex/linux-huawei-aum
+
+    - name: Create output folder
+      run: mkdir /home/runner/workspace/output
+
+    - name: Build kernel
+      run: |
+        cd /home/runner/workspace/linux-huawei-aum/
+        export ARCH=arm64 && export SUBARCH=arm64
+        export CROSS_COMPILE=/home/runner/workspace/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9/bin/aarch64-linux-android-
+        make O=/home/runner/workspace/output merge_msm8937_64_defconfig
+        make O=/home/runner/workspace/output -j$(nproc --all)
+
+    - uses: actions/upload-artifact@v3
+      with:
+       name: Upload files from the boot folder
+       path: /home/runner/workspace/output/arch/arm64/boot/*
