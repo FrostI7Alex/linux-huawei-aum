@@ -1,0 +1,52 @@
+name: Compile Kernel (Android)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Update APT sources
+      run: sudo apt update
+
+    - name: Install Dependencies
+      run: sudo apt install git bc bison flex libssl-dev make
+
+    - name: Create Workspace and Output
+      run: |
+        mkdir /home/runner/workspace
+        mkdir /home/runner/workspace/output
+
+    - name: Clone Repos
+      run: |
+        cd /home/runner/workspace/
+        git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9
+        git clone https://github.com/osm0sis/mkbootimg
+        git clone https://github.com/FrostI7Alex/linux-huawei-aum
+
+    - name: Build Kernel
+      run: |
+        cd /home/runner/workspace/linux-huawei-aum/
+        export ARCH=arm64 && export SUBARCH=arm64
+        export CROSS_COMPILE=/home/runner/workspace/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9/bin/aarch64-linux-android-
+        make O=/home/runner/workspace/output merge_msm8937_64_defconfig
+        make O=/home/runner/workspace/output CONFIG_NO_ERROR_ON_MISMATCH=y
+        make O=/home/runner/workspace/output -j$(nproc --all)
+
+    - name: Build Flashable Image
+      run: |
+        cd /home/runner/workspace/mkbootimg/
+        make -j$(nproc --all)
+        ./mkbootimg --kernel /home/runner/workspace/output/arch/arm64/boot/Image.gz-dtb --ramdisk /dev/null --cmdline 'androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 androidboot.bootdevice=7824900.sdhci slub_min_objects=12 unmovable_isolate1=2:192M,3:224M,4:256M unmovable_isolate2=2:64M,3:80M,4:80M androidboot.selinux=permissive buildvariant=user' --base 0x80000000 --kernel_offset 0x00008000 --ramdisk_offset 0x02000000 --second_offset 0x00f00000 --tags_offset 0x00000100 --os_version 8.0.0 --os_patch_level 2019-01 --pagesize 2048 --header_version 0 --hashtype sha1 -o /home/runner/workspace/output/KERNEL.img
+
+    - uses: actions/upload-artifact@v3
+      with:
+       name: Kernel image file
+       path: /home/runner/workspace/output/KERNEL.img
