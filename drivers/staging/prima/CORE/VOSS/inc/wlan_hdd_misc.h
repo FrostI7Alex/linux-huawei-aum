@@ -31,12 +31,12 @@
 #ifdef MSM_PLATFORM
 #ifdef QC_WLAN_CHIPSET_PRIMA
 #ifdef CONFIG_HUAWEI_WIFI
-#define WLAN_INI_FILE              "../../vendor/etc/wifi/WCNSS_qcom_cfg.ini"
+#define WLAN_INI_FILE              "wlan/prima/WCNSS_qcom_cfg.ini"
 #define WLAN_CFG_FILE              "wlan/prima/WCNSS_cfg.dat"
 #define WLAN_FW_FILE               ""
 #define WLAN_NV_FILE               "load/WCNSS_hw_wlan_nv.bin"
 #define HWCUST_WLAN_CAL_NV_FILE    "../../persist/WCNSS_hw_cal_wlan_nv.bin"
-#define HW_WLAN_NV_FILE            "../wifi/WCNSS_hw_wlan_nv.bin"
+#define HW_WLAN_NV_FILE            "wlan/prima/WCNSS_hw_wlan_nv.bin"
 #define NVBIN_FILE_QCOM_DEFAULT    "wlan/prima/WCNSS_qcom_wlan_nv.bin"
 #define NVBIN_PATH_LENTH           70
 #else
