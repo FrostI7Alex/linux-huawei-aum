@@ -2,9 +2,9 @@ name: Compile Kernel (Android)
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "rerun" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "rerun" ]
 
 jobs:
   build:
