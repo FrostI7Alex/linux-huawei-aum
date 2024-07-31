@@ -1,7 +1,10 @@
 name: Compile Kernel (Android)
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ "rerun" ]
+  pull_request:
+    branches: [ "rerun" ]
 
 jobs:
   build:
